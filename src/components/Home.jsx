@@ -1,5 +1,5 @@
 import Carousel from "./Carousel"
-import MovieList from './ListMovie.jsx'
+import MovieList from './ListMovie'
 import {Box} from '@mui/material';
 
 function Home() {
