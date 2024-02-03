@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import DarkMode from './DarkMode';
 import Img from '../assets/entrada-de-cine.png'
 import { Link } from 'react-router-dom';

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from "react";
 import useMovies from "../Hooks/UseMovie";
 import { useParams } from "react-router-dom";

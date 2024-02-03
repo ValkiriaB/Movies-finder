@@ -1,3 +1,4 @@
+import React from 'react';
 import {useEffect, useState } from "react";
 import { Typography, Box, Grid, Pagination } from "@mui/material";
 import useMovies from "../Hooks/UseMovie";
