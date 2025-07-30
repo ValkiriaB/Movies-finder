@@ -1,17 +1,28 @@
-import React from 'react';
-import{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Grid, Typography, Button, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import useMovies from '../Hooks/UseMovie.jsx';
 
 const MovieCarousel = () => {
   const { data, getData } = useMovies();
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   const [expanded, setExpanded] = useState(false);
   const [currentMovie, setCurrentMovie] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     getData('now_playing', 1);
@@ -23,7 +34,7 @@ const MovieCarousel = () => {
   };
 
   return (
-    <Carousel>
+    <Carousel showThumbs={false} showStatus={false} autoPlay infiniteLoop>
       {data.results &&
         data.results.map((movie) => (
           <Grid key={movie.id}>
@@ -32,47 +43,39 @@ const MovieCarousel = () => {
                 position: 'relative',
                 backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
                 backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
                 width: '100%',
-                height: '600px',
-                borderRadius: '0px',
+                height: { xs: '450px', sm: '500px', md: '600px' },
+                borderRadius: 0,
                 overflow: 'hidden',
               }}
             >
-              <Button 
-                onClick={() => navigate(`/movie/${movie.id}`)}  
-                style={{ position: 'absolute', bottom: '24px', right: '36px', backgroundColor: 'violet'}}
-                variant="contained"
-                size="small"
-              >
-                Más información
-              </Button>
               <CardContent
                 sx={{
                   position: 'absolute',
-                  maxWidth: 800,
-                  margin: '10px',
-                  marginTop: '23rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                  bottom: isMobile ? '80px' : '100px',
+                  maxWidth: { xs: '90%', md: '800px' },
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
                   padding: '1rem',
                   borderRadius: '8px',
                   textAlign: 'center',
+                  mx: 'auto',
                 }}
               >
-                <Typography variant="h6" component="div" color={'black'}>
+                <Typography variant="h6" component="div" color="black" fontSize={{ xs: '1rem', md: '1.5rem' }}>
                   {movie.title}
                 </Typography>
                 {movie.overview ? (
                   expanded && currentMovie === movie ? (
                     <>
-                      <Typography variant="body2" color={'black'}>
+                      <Typography variant="body2" color="black" sx={{ my: 1 }}>
                         {movie.overview}
                       </Typography>
                       <Button
-                        style={{ backgroundColor: 'violet' }}
-                        m={1}
+                        sx={{ backgroundColor: 'violet', mt: 1 }}
                         variant="contained"
                         size="small"
                         onClick={() => handleExpand(movie)}
@@ -82,8 +85,7 @@ const MovieCarousel = () => {
                     </>
                   ) : (
                     <Button
-                      style={{ backgroundColor: 'violet' }}
-                      m={1}
+                      sx={{ backgroundColor: 'violet', mt: 1 }}
                       variant="contained"
                       size="small"
                       onClick={() => handleExpand(movie)}
@@ -92,11 +94,26 @@ const MovieCarousel = () => {
                     </Button>
                   )
                 ) : (
-                  <Typography variant="body2" color={'black'}>
+                  <Typography variant="body2" color="black">
                     Esta película no tiene descripción.
                   </Typography>
                 )}
               </CardContent>
+
+              <Button
+                onClick={() => navigate(`/movie/${movie.id}`)}
+                sx={{
+                  position: 'absolute',
+                  bottom: '20px',
+                  right: '20px',
+                  backgroundColor: 'violet',
+                  zIndex: 2
+                }}
+                variant="contained"
+                size="small"
+              >
+                Más información
+              </Button>
             </Card>
           </Grid>
         ))}

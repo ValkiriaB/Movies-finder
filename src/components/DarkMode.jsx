@@ -1,13 +1,25 @@
-
 import React from 'react';
 import { IconButton } from '@mui/material';
-import MoonIcon from '../assets/luna.png';  
-import SunIcon from '../assets/sol.png';    
+import MoonIcon from '../assets/luna.png';
+import SunIcon from '../assets/sol.png';
 
 const DarkMode = ({ toggleDarkMode, darkMode }) => {
   return (
-    <IconButton onClick={toggleDarkMode} color="inherit">
-      {darkMode ? <img src={SunIcon} alt="Sun" width="25" height="25" /> : <img src={MoonIcon} alt="Moon" width="25" height="25" />}
+    <IconButton
+      onClick={toggleDarkMode}
+      color="inherit"
+      sx={{
+        padding: { xs: '6px', sm: '8px' },
+        '& img': {
+          width: { xs: 20, sm: 25, md: 28 }, // tamaño adaptativo del ícono
+          height: 'auto',
+        },
+      }}
+    >
+      <img
+        src={darkMode ? SunIcon : MoonIcon}
+        alt={darkMode ? 'Sun' : 'Moon'}
+      />
     </IconButton>
   );
 };

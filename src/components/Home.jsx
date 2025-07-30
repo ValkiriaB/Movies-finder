@@ -1,28 +1,43 @@
 import React from 'react';
-import Carousel from "./Carousel"
-import MovieList from './ListMovie'
-import {Box} from '@mui/material';
+import Carousel from "./Carousel";
+import MovieList from './ListMovie';
+import { Box } from '@mui/material';
 
 function Home() {
-  
-    return (
-      <>
-   
-       <Carousel/>
-       <Box  style={{ display: 'flex', justifyContent: 'space-between', marginBottom:'40px' }}>
-        <Box width="100%" maxWidth="750px"style={{marginLeft:'100px'}}>
+  return (
+    <>
+      <Carousel />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          mb: 5,
+          px: { xs: 2, md: 0 },
+        }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: { xs: '100%', md: '750px' },
+            mb: { xs: 4, md: 0 },
+            ml: { xs: 0, md: '100px' },
+          }}
+        >
           <MovieList type="popular" />
         </Box>
-        <Box width="100%" maxWidth="750px" style={{ marginRight: '100px'}}>
-        <MovieList type="top_rated" />
-            
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: { xs: '100%', md: '750px' },
+            mr: { xs: 0, md: '100px' },
+          }}
+        >
+          <MovieList type="top_rated" />
         </Box>
-         
-       
-     </Box>
-      </>
-    )
-  }
-  
-  export default Home;
-  
+      </Box>
+    </>
+  );
+}
+
+export default Home;

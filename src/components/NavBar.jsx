@@ -46,86 +46,77 @@ const NavBar = ({ toggleDarkMode, darkMode }) => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-          {/* LOGO + TÍTULO */}
-          <Link
-            to="/"
-            style={{
-              textDecoration: 'none',
-              color: darkMode ? 'whiteSmoke' : 'black'
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <img src={Img} alt="entrada-de-cine" width={50} height={50} />
-              <Typography
-                variant="h6"
-                noWrap
-                sx={{
-                  ml: 2,
-                  display: { xs: 'none', sm: 'block' },
-                  fontWeight: 700,
-                  fontFamily: 'monospace',
-                  letterSpacing: '.2rem',
-                  color: darkMode ? 'whiteSmoke' : 'black'
-                }}
-              >
-                Movies Finder
-              </Typography>
-            </Box>
-          </Link>
+          {/* Logo + Menú hamburguesa */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Ícono del menú en móvil */}
+            {isMobile && (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="menu"
+                  onClick={handleOpenNavMenu}
+                  sx={{ color: darkMode ? 'whiteSmoke' : 'black' }}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  keepMounted
+                  transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                >
+                  <MenuItem component={Link} to="/" onClick={handleCloseNavMenu}>
+                    Home
+                  </MenuItem>
+                  {pages.map((page) => (
+                    <MenuItem
+                      key={page}
+                      component={Link}
+                      to={`/${page === 'Ultimos Lanzamientos' ? 'ultimoslanzamientos' : page.toLowerCase()}`}
+                      onClick={handleCloseNavMenu}
+                    >
+                      {page}
+                    </MenuItem>
+                  ))}
+                  {showFavorites && (
+                    <MenuItem
+                      component={Link}
+                      to="/favorites"
+                      onClick={handleCloseNavMenu}
+                    >
+                      Favoritos
+                    </MenuItem>
+                  )}
+                </Menu>
+              </>
+            )}
 
-          {/* MENÚ RESPONSIVE */}
-          {isMobile ? (
-            <>
-              <IconButton
-                size="large"
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                sx={{ color: darkMode ? 'whiteSmoke' : 'black' }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-              >
-                <MenuItem component={Link} to="/" onClick={handleCloseNavMenu}>
-                  Home
-                </MenuItem>
-                {pages.map((page) => (
-                  <MenuItem
-                    key={page}
-                    component={Link}
-                    to={`/${page === 'Ultimos Lanzamientos' ? 'ultimoslanzamientos' : page.toLowerCase()}`}
-                    onClick={handleCloseNavMenu}
-                  >
-                    {page}
-                  </MenuItem>
-                ))}
-                {showFavorites && (
-                  <MenuItem
-                    component={Link}
-                    to="/favorites"
-                    onClick={handleCloseNavMenu}
-                  >
-                    Favoritos
-                  </MenuItem>
-                )}
-              </Menu>
-            </>
-          ) : (
+            {/* Logo y título */}
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <img src={Img} alt="entrada-de-cine" width={50} height={50} />
+                <Typography
+                  variant="h6"
+                  noWrap
+                  sx={{
+                    ml: 1,
+                    fontWeight: 700,
+                    fontFamily: 'monospace',
+                    letterSpacing: '.2rem',
+                    color: darkMode ? 'whiteSmoke' : 'black'
+                  }}
+                >
+                  Movies Finder
+                </Typography>
+              </Box>
+            </Link>
+          </Box>
+
+          {/* Navegación solo para escritorio */}
+          {!isMobile && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Link to="/" style={{ textDecoration: 'none' }}>
                 <Button
@@ -165,9 +156,13 @@ const NavBar = ({ toggleDarkMode, darkMode }) => {
                   </Button>
                 </Link>
               )}
-              <DarkMode toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
             </Box>
           )}
+
+          {/* Dark mode siempre visible */}
+          <Box sx={{ ml: 2 }}>
+            <DarkMode toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>
@@ -175,3 +170,5 @@ const NavBar = ({ toggleDarkMode, darkMode }) => {
 };
 
 export default NavBar;
+
+
