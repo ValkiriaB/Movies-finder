@@ -34,7 +34,14 @@ const MovieCarousel = () => {
   };
 
   return (
-    <Carousel showThumbs={false} showStatus={false} autoPlay infiniteLoop>
+    <Carousel
+      showThumbs={false}
+      showStatus={false}
+      showIndicators={!isMobile} // ocultar los puntos en mobile
+      showArrows={true}          // mantener flechas siempre visibles
+      autoPlay
+      infiniteLoop
+    >
       {data.results &&
         data.results.map((movie) => (
           <Grid key={movie.id}>
@@ -122,3 +129,5 @@ const MovieCarousel = () => {
 };
 
 export default MovieCarousel;
+
+
