@@ -10,8 +10,8 @@ function Footer() {
         py: 2,
         textAlign: 'center',
         backgroundColor: 'background.paper',
-        borderTop: '1px solid',
-        borderColor: 'divider',
+        borderTop: '8px solid',
+        borderColor: '#000000',
       }}
     >
       <Typography variant="caption">Hecho por Vale</Typography>
