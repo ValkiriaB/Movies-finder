@@ -9,28 +9,29 @@ function Home() {
       <Carousel />
       <Box
         sx={{
+          mt: { xs: 2, md: 4 },
+          mb: { xs: 4, md: 6 }, // espacio inferior para que no choque con footer
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: 'space-between',
-          mb: 5,
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          gap: { xs: 2, md: 3 }, // menos separación entre listas
           px: { xs: 2, md: 0 },
         }}
       >
         <Box
           sx={{
             width: '100%',
-            maxWidth: { xs: '100%', md: '750px' },
-            mb: { xs: 4, md: 0 },
-            ml: { xs: 0, md: '100px' },
+            maxWidth: { xs: '100%', md: '420px' },
           }}
         >
           <MovieList type="popular" />
         </Box>
+
         <Box
           sx={{
             width: '100%',
-            maxWidth: { xs: '100%', md: '750px' },
-            mr: { xs: 0, md: '100px' },
+            maxWidth: { xs: '100%', md: '420px' },
           }}
         >
           <MovieList type="top_rated" />
@@ -41,3 +42,4 @@ function Home() {
 }
 
 export default Home;
+

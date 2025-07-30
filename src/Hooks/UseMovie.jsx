@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axios from "axios";
 
-
-
 const useMovies = () => {
-  let AccessTokenAuth = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZThkNzYyNDgwZTg2YWYxNGQ0NTliOTNhY2I0NTU1OSIsInN1YiI6IjY1YWFmNzFjYzQzM2VhMDBjNTc0YWQ1NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.r-3jAYDFi5o9uv7WUObYZFjXgj9TkG5mHs6uikSQws8';
+  const AccessTokenAuth = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZThkNzYyNDgwZTg2YWYxNGQ0NTliOTNhY2I0NTU1OSIsInN1YiI6IjY1YWFmNzFjYzQzM2VhMDBjNTc0YWQ1NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.r-3jAYDFi5o9uv7WUObYZFjXgj9TkG5mHs6uikSQws8';
+  
   const [data, setData] = useState([]);
-  const [video, setVideo] = useState(null); 
+  const [video, setVideo] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchMovies = async (url, dataType) => {
+  const fetchMovies = useCallback(async (url, dataType) => {
     try {
       setLoading(true);
       const response = await axios.get(url, {
@@ -31,19 +30,19 @@ const useMovies = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getData = async (category, pageNumber) => {
+  const getData = useCallback(async (category, pageNumber) => {
     const url = `https://api.themoviedb.org/3/movie/${category}?language=es-MX${pageNumber ? `&page=${pageNumber}` : ""}`;
     await fetchMovies(url, 'movies');
-  };
+  }, [fetchMovies]);
 
-  const searchMovie = async (searchInput, pageNumber) => {
+  const searchMovie = useCallback(async (searchInput, pageNumber) => {
     const url = `https://api.themoviedb.org/3/search/movie?query=${searchInput}&language=es-MX&page=${pageNumber}`;
     await fetchMovies(url, 'movies');
-  };
+  }, [fetchMovies]);
 
-  const getVideo = async (movie_Id) => {
+  const getVideo = useCallback(async (movie_Id) => {
     const url = `https://api.themoviedb.org/3/movie/${movie_Id}/videos?language=es-MX`;
     try {
       const response = await axios.get(url, {
@@ -58,7 +57,7 @@ const useMovies = () => {
       console.error(`Error fetching videos:`, error);
       return null;
     }
-  };
+  }, []);
 
   return { data, getData, searchMovie, video, getVideo, error, loading };
 };
