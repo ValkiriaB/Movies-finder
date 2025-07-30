@@ -11,7 +11,16 @@ const CardMovie = ({ title, poster, movieId }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 370, marginBottom: 2 }}>
+    <Card
+      sx={{
+        maxWidth: 370,
+        marginBottom: 2,
+        height: '100%',           // para que tome toda la altura del contenedor padre
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
       <CardMedia
         component="img"
         alt={title}
@@ -20,11 +29,11 @@ const CardMovie = ({ title, poster, movieId }) => {
       />
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" noWrap>
             {title}
           </Typography>
           <Button
-            style={{ color: 'violet', borderRadius: '40px'}}
+            style={{ color: 'violet', borderRadius: '40px' }}
             onClick={handleButtonClick}
           >
             <ChevronRightRoundedIcon />
@@ -36,3 +45,4 @@ const CardMovie = ({ title, poster, movieId }) => {
 };
 
 export default CardMovie;
+

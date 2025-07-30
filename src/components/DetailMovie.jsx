@@ -1,8 +1,15 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import useMovies from "../Hooks/UseMovie";
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Stack,
+  useTheme,
+} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useFavorites } from "../context/FavoritesContext";
@@ -15,6 +22,9 @@ const DetailMovie = () => {
   const [isFavoriteMovie, setIsFavoriteMovie] = useState(false);
   const [trailerError, setTrailerError] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,13 +43,6 @@ const DetailMovie = () => {
     setIsFavoriteMovie(isFavorite(id));
   }, [id, isFavorite]);
 
-  useEffect(() => { 
-    setIsFavoriteMovie(isFavorite(id));
-    if (!isFavorite(id)) {
-      localStorage.removeItem(`isFavorite_${id}`);
-    }
-  }, [id, isFavorite]);
-
   const handleFavoriteToggle = async () => {
     if (!buttonDisabled) {
       setButtonDisabled(true);
@@ -55,130 +58,122 @@ const DetailMovie = () => {
       }
 
       setIsFavoriteMovie(!isFavoriteMovie);
-      if (isFavoriteMovie) {
-        localStorage.setItem(`isFavorite_${id}`, (!isFavoriteMovie).toString());
-      }
-
       syncFavorites();
 
       setButtonDisabled(false);
     }
   };
 
+  if (!data) return null;
+
   return (
-    <Box>
-      {data ? (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundImage: `url(https://image.tmdb.org/t/p/original/${data.backdrop_path})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        p: { xs: 2, md: 8 },
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Card
+        sx={{
+          maxWidth: 1000,
+          width: "100%",
+          bgcolor: isDark ? "rgba(44,44,44,0.8)" : "rgba(255,255,255,0.85)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 3,
+          boxShadow: 6,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          overflow: "hidden",
+        }}
+      >
+        {/* Poster Image */}
         <Box
-          display="flex"
-          filter="auto"
-          brightness="6%"
+          component="img"
+          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+          alt={data.title}
           sx={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original/${data.backdrop_path})`,
-            backgroundPosition: "center",
-            backgroundSize: "cover",
+            width: { xs: "100%", md: "40%" },
+            height: { xs: "auto", md: "100%" },
+            objectFit: "cover",
+            flexShrink: 0,
+          }}
+        />
+
+        {/* Content */}
+        <Box
+          sx={{
+            p: { xs: 3, md: 5 },
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
-          <Card
-            sx={{
-              margin: "30rem",
-              width: "60%",
-              marginBottom: "40px",
-              mt: "50px",
-              backdropFilter: "blur(10px)",
-              backdropContrast: "100%",
-              backgroundColor: "transparent",
-            }}
-          >
-            <Box
-              sx={{
-                backdropFilter: "auto",
-                backdropContrast: "90%",
-                backgroundColor: "transparent",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Box
-                sx={{
-                  marginLeft: "20px",
-                  marginTop: "50px",
-                  marginBottom: "100px",
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${data.poster_path})`,
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  width: "50%",
-                  height: "600px",
-                }}
-              />
-              <Box width="60%" height="100%">
-                <Box
-                  sx={{
-                    marginTop: "50px",
-                    backdropFilter: "auto",
-                    backdropContrast: "60%",
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h5" color="white">
-                      {data.title}
-                    </Typography>
+          <CardContent sx={{ p: 0 }}>
+            <Typography variant="h4" component="h1" gutterBottom color={isDark ? "white" : "text.primary"}>
+              {data.title}
+            </Typography>
 
-                    <Typography variant="h6" py={2} color="white">
-                      Descripción General:
-                    </Typography>
-                    <Typography variant="body1" color="white">
-                      {data.overview}
-                    </Typography>
-                    <Typography variant="h6" mt={2} ml={1} color="white">
-                      Géneros
-                    </Typography>
-                    <Typography variant="body2" ml={1} color="white">
-                      {data.genres &&
-                        data.genres.map((genre) => (
-                          <span key={genre.id}>{genre.name}, </span>
-                        ))}
-                    </Typography>
-                  </CardContent>
-                </Box>
-                {video && (
-                  <a
-                    href={`https://www.youtube.com/watch?v=${video}`}
-                    target="_blank"
-                    style={{ margin: "30px" }}
-                  >
-                    <Button
-                      variant="outlined"
-                      style={{ color: "#1e1e1e", borderColor: "#ba68c8" }}
-                    >
-                      Ver Trailer
-                    </Button>
-                  </a>
-                )}
-                {trailerError && (
-                  <Typography variant="body2" mt={1} ml={1} color="white">
-                    Esta película no posee trailer.
-                  </Typography>
-                )}
-                <Button
-                  onClick={handleFavoriteToggle}
-                  color="inherit"
-                  variant="outlined"
-                  style={{
-                    color: isFavoriteMovie ? "#98d02d" : "#ba68c8",
-                    borderColor: isFavoriteMovie ? "#98d02d" : "#ba68c8",
-                    backgroundColor: "transparent",
-                  }}
-                  startIcon={isFavoriteMovie ? <CheckCircleOutlineIcon /> : <StarIcon />}
-                  sx={{ textTransform: 'none' }}
-                  disabled={buttonDisabled}
-                >
-                  {isFavoriteMovie ? 'Añadido a Favoritos' : 'Agregar a Favoritos'}
-                </Button>
-              </Box>
-            </Box>
-          </Card>
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom color={isDark ? "white" : "text.primary"}>
+              Descripción General:
+            </Typography>
+            <Typography variant="body1" paragraph color={isDark ? "white" : "text.secondary"}>
+              {data.overview}
+            </Typography>
+
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom color={isDark ? "white" : "text.primary"}>
+              Géneros
+            </Typography>
+            <Typography variant="body2" color={isDark ? "white" : "text.secondary"}>
+              {data.genres && data.genres.map((genre) => genre.name).join(", ")}
+            </Typography>
+          </CardContent>
+
+          {/* Buttons */}
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ mt: 3 }}
+            flexWrap="wrap"
+            justifyContent="flex-start"
+          >
+            {video && (
+              <Button
+                variant="outlined"
+                color="primary"
+                href={`https://www.youtube.com/watch?v=${video}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ textTransform: "none" }}
+              >
+                Ver Trailer
+              </Button>
+            )}
+            {trailerError && (
+              <Typography variant="body2" color={isDark ? "white" : "text.error"}>
+                Esta película no posee trailer.
+              </Typography>
+            )}
+            <Button
+              onClick={handleFavoriteToggle}
+              variant={isFavoriteMovie ? "contained" : "outlined"}
+              color={isFavoriteMovie ? "success" : "primary"}
+              startIcon={isFavoriteMovie ? <CheckCircleOutlineIcon /> : <StarIcon />}
+              disabled={buttonDisabled}
+              sx={{ textTransform: "none" }}
+            >
+              {isFavoriteMovie ? "Añadido a Favoritos" : "Agregar a Favoritos"}
+            </Button>
+          </Stack>
         </Box>
-      ) : null}
+      </Card>
     </Box>
   );
 };

@@ -1,56 +1,63 @@
-import React from 'react';
-import { useEffect } from 'react';
-import {  Typography,Box } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
 
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 const Footer = () => {
+  const [showFooter, setShowFooter] = useState(false);
+
   useEffect(() => {
-    const footer = document.getElementById('footer');
+    const checkScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
 
-    const handleScroll = () => {
-      
-      if (window.scrollY > 200) {
-        footer.style.display = 'block';
-      } else {
-        footer.style.display = 'none';
-      }
+      setShowFooter(scrollTop + windowHeight >= fullHeight - 10);
     };
+    const debounced = debounce(checkScroll, 250);
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', debounced);
+    // llamar una vez al montar
+    checkScroll();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', debounced);
     };
-  }, []); 
+  }, []);
 
   return (
     <Box
-      id="footer"
-      style={{
-        backgroundColor: "#1e1e1e",
-        height: "70px",
-        position: "sticky",
-        bottom: 0,
-        width: "100%",
-        display: "none",
-        zIndex: 1000,
+      sx={{
+        backgroundColor: '#1e1e1e',
+        height: '50px',
+        width: '100%',
+        display: showFooter ? 'flex' : 'none',
+        justifyContent: 'center',
+        alignItems: 'center',
+        transition: 'opacity 0.3s ease-in-out',
       }}
     >
-		<Typography 
-        variant="h6" 
-        sx={{   
-          letterSpacing: ".3rem",
-          fontFamily: "monospace",
-          color: "whiteSmoke",
-          textAlign: "center",
-          paddingTop: "20px"
+      <Typography
+        variant="subtitle2"
+        sx={{
+          letterSpacing: '.2rem',
+          fontFamily: 'monospace',
+          color: 'whiteSmoke',
+          textAlign: 'center',
         }}
       >
         Hecho por Vale
       </Typography>
-     
     </Box>
   );
 };
 
 export default Footer;
+
+

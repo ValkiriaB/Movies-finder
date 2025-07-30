@@ -1,38 +1,45 @@
-import React from "react";
-import { TextField, Container, Grid, Box, Typography, IconButton, InputAdornment } from "@mui/material";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  TextField,
+  Container,
+  Grid,
+  Box,
+  Typography,
+  IconButton,
+  InputAdornment
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import useMovies from "../Hooks/UseMovie";
 import CardMovie from "./CardMovie";
 import NotFound from "../assets/searching.png";
 
 const Buscador = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+  const { searchMovie, data, loading, error } = useMovies();
+  const [showNotFound, setShowNotFound] = useState(false);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [hasSearched, setHasSearched] = useState(false);
-    const { searchMovie, data, loading, error } = useMovies();
-    const [showNotFound, setShowNotFound] = useState(false);
-  
-    let searchTimer;
-  
-    const handleInputChange = (event) => {
-      const value = event.target.value;
-      setSearchTerm(value);
-      setHasSearched(value.trim() !== "");
-      if (searchTimer) {
-        clearTimeout(searchTimer);
-      }
-  
-      searchTimer = setTimeout(() => {
-        searchMovie(value, 1);
-        setShowNotFound(
-          value.trim() !== "" &&
-            !loading &&
-            !error &&
-            (!data.results || data.results.length === 0)
-        );
-      }, 900);
-    };
+  let searchTimer;
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    setHasSearched(value.trim() !== "");
+
+    if (searchTimer) {
+      clearTimeout(searchTimer);
+    }
+
+    searchTimer = setTimeout(() => {
+      searchMovie(value, 1);
+      setShowNotFound(
+        value.trim() !== "" &&
+          !loading &&
+          !error &&
+          (!data.results || data.results.length === 0)
+      );
+    }, 900);
+  };
 
   const handleClearSearch = () => {
     setSearchTerm("");
@@ -44,8 +51,12 @@ const Buscador = () => {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [data]);
+
   return (
-    <Container>
+    <Container sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Box p={5}>
         <TextField
           fullWidth
@@ -53,7 +64,6 @@ const Buscador = () => {
           label="Buscar películas"
           value={searchTerm}
           onChange={handleInputChange}
-          onClear={handleClearSearch}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -64,21 +74,17 @@ const Buscador = () => {
             ),
           }}
           sx={{
-            '& label': {
-              color: '#ba68c8', 
-            },
-            '& fieldset': {
-              borderColor: '#ba68c8 !important', 
-            },
-            '&:hover fieldset': {
-              borderColor: '#ba68c8 !important',
-            },
+            '& label': { color: '#ba68c8' },
+            '& fieldset': { borderColor: '#ba68c8 !important' },
+            '&:hover fieldset': { borderColor: '#ba68c8 !important' },
           }}
         />
       </Box>
+
       <Grid container spacing={2}>
-        {loading && <p>Cargando...</p>}
-        {error && <p>{error}</p>}
+        {loading && <Typography variant="body1" p={2}>Cargando...</Typography>}
+        {error && <Typography variant="body1" color="error" p={2}>{error}</Typography>}
+        
         {!loading && !error && data.results && data.results.length > 0 ? (
           data.results.map((movie) => (
             <Grid item key={movie.id} xs={12} sm={6} md={4} lg={4}>

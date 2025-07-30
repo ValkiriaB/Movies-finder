@@ -1,11 +1,10 @@
-import React from 'react';
-import {useEffect, useState } from "react";
-import { Typography, Box, Grid, Pagination} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Typography, Box, Grid, Pagination } from "@mui/material";
 import useMovies from "../Hooks/UseMovie";
 import CardMovie from "./CardMovie";
 
 const LatestReleases = () => {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
   const { data, getData } = useMovies();
 
   useEffect(() => {
@@ -13,21 +12,40 @@ const LatestReleases = () => {
   }, []);
 
   const handlePageChange = (event, value) => {
-    setPage(value)
+    setPage(value);
     getData("now_playing", value);
   };
 
   return (
     <Box p={4}>
-      <Typography variant="h5" mb={4} display="flex" justifyContent="center" sx={{ fontWeight: 'bold', color: '#ba68c8'}}>
+      <Typography
+        variant="h5"
+        mb={4}
+        display="flex"
+        justifyContent="center"
+        sx={{ fontWeight: "bold", color: "#ba68c8" }}
+      >
         Últimos Lanzamientos
       </Typography>
       <Grid container spacing={3}>
-        {data.results && data.results.map((movie) => (
-          <Grid item key={movie.id} xs={12} sm={6} md={4} lg={3}>
-            <CardMovie title={movie.title} poster={movie.poster_path} movieId={movie.id} />
-          </Grid>
-        ))}
+        {data.results &&
+          data.results.map((movie) => (
+            <Grid
+              item
+              key={movie.id}
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              sx={{ display: "flex" }} // <-- Aquí la clave para igualar altura
+            >
+              <CardMovie
+                title={movie.title}
+                poster={movie.poster_path}
+                movieId={movie.id}
+              />
+            </Grid>
+          ))}
       </Grid>
       <Box mt={7} display="flex" justifyContent="center">
         <Pagination
@@ -35,9 +53,9 @@ const LatestReleases = () => {
           page={page}
           onChange={handlePageChange}
           sx={{
-            '& .MuiPaginationItem-page:hover': {
-              backgroundColor: '#ba68c8',
-              color: 'white',
+            "& .MuiPaginationItem-page:hover": {
+              backgroundColor: "#ba68c8",
+              color: "white",
             },
           }}
         />
